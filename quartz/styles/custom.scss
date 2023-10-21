@@ -1,1 +1,15 @@
-// put your custom CSS here!
+body {
+    background: #f2e9da;
+    /* font-family: "EB Garamond","Times New Roman",serif!important; */
+    font-size: 1.3125em;
+    line-height: 1.5;
+}
+
+.page article {
+    position: relative;
+    background: white;
+    margin: 2em auto;
+    max-width: 60rem;
+    padding: 2em;
+    box-shadow: 12px 18px 24px 20px rgb(152 115 53 / 10%);
+}
