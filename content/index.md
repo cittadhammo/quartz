@@ -5,6 +5,10 @@ title: Welcome to Quartz
 This is a blank Quartz installation.
 See the [documentation](https://quartz.jzhao.xyz) for how to get started.
 
+# Features
+
+- How to add a "Edit" Button?
+
 ## A small title
 
 A bit of text.
