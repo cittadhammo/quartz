@@ -1,6 +1,5 @@
 body {
     background: #f2e9da;
-    /* font-family: "EB Garamond","Times New Roman",serif!important; */
     font-size: 1.3125em;
     line-height: 1.5;
 }
@@ -12,4 +11,8 @@ body {
     max-width: 60rem;
     padding: 2em;
     box-shadow: 12px 18px 24px 20px rgb(152 115 53 / 10%);
+}
+
+h1, h2, h3 {
+    font-variant: small-caps;
 }
