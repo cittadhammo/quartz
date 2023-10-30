@@ -48,6 +48,84 @@ async function renderGraph(container: string, fullSlug: FullSlug) {
 
   const data = await fetchData
 
+  console.log(data)
+  let dataBis = []
+
+  for (const key in data) {
+    let crumb = key.split("/"),
+    crumbL = crumb.length,
+    parent = crumb[crumbL-2],
+    name = crumb[crumbL-1]
+    if(name=="index" && crumbL > 1) name = parent, parent = crumb[crumbL-3]
+    
+    if(parent != "tags") dataBis.push({ id: name, parentId: parent == undefined ? (name=="index" ? "": "index") : parent, ...data[key]})
+  }
+  console.log(dataBis)
+  const root = d3.stratify()(dataBis)
+  console.log(root)
+  const tree = d3.tree().nodeSize([12, 120])
+  const treeLink = d3.linkHorizontal().x(d => d.y).y(d => d.x)
+  function graph2(root, {
+    label = d => d.data.id, 
+    highlight = () => false,
+    marginLeft = 40
+  } = {}) {
+    root = tree(root);
+  
+    let x0 = Infinity;
+    let x1 = -x0;
+    root.each(d => {
+      if (d.x > x1) x1 = d.x;
+      if (d.x < x0) x0 = d.x;
+    });
+  
+    const svg = d3.create("svg")
+        .attr("viewBox", [0, 0, 200, x1 - x0 + 12 * 2])
+        .style("overflow", "visible");
+    
+    const g = svg.append("g")
+        .attr("font-family", "sans-serif")
+        .attr("font-size", 10)
+        .attr("transform", `translate(${marginLeft},${12 - x0})`);
+      
+    const link = g.append("g")
+      .attr("fill", "none")
+      .attr("stroke", "#555")
+      .attr("stroke-opacity", 0.4)
+      .attr("stroke-width", 1.5)
+    .selectAll("path")
+      .data(root.links())
+      .join("path")
+        .attr("stroke", d => highlight(d.source) && highlight(d.target) ? "red" : null)
+        .attr("stroke-opacity", d => highlight(d.source) && highlight(d.target) ? 1 : null)
+        .attr("d", treeLink);
+    
+    const node = g.append("g")
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-width", 3)
+      .selectAll("g")
+      .data(root.descendants())
+      .join("g")
+        .attr("transform", d => `translate(${d.y},${d.x})`);
+  
+    node.append("circle")
+        .attr("fill", d => highlight(d) ? "red" : d.children ? "#555" : "#999")
+        .attr("r", 2.5);
+  
+    node.append("text")
+        .attr("fill", d => highlight(d) ? "red" : null)
+        .attr("stroke", "white")
+        .attr("paint-order", "stroke")
+        .attr("dy", "0.31em")
+        .attr("x", d => d.children ? -6 : 6)
+        .attr("text-anchor", d => d.children ? "end" : "start")
+        .text(label);
+    
+    return svg.node();
+  }
+  console.log(graph2(root))
+
+
   const links: LinkData[] = []
   const tags: SimpleSlug[] = []
 
@@ -124,6 +202,8 @@ async function renderGraph(container: string, fullSlug: FullSlug) {
   const height = Math.max(graph.offsetHeight, 250)
   const width = graph.offsetWidth
 
+  
+
   const svg = d3
     .select<HTMLElement, NodeData>("#" + container)
     .append("svg")
@@ -131,8 +211,20 @@ async function renderGraph(container: string, fullSlug: FullSlug) {
     .attr("height", height)
     .attr("viewBox", [-width / 2 / scale, -height / 2 / scale, width / scale, height / scale])
 
+
+  const svg3 = graph2(root).innerHTML;
+  svg.append("g").attr("transform", "translate(-50%, -50%)").html(svg3);
+
+  const svg2 = d3
+    .select<HTMLElement, NodeData>("#" + container)
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .attr("viewBox", [-width / 2 / scale, -height / 2 / scale, width / scale, height / scale])
+
+
   // draw links between nodes
-  const link = svg
+  const link = svg2
     .append("g")
     .selectAll("line")
     .data(graphData.links)
@@ -142,7 +234,7 @@ async function renderGraph(container: string, fullSlug: FullSlug) {
     .attr("stroke-width", 1)
 
   // svg groups
-  const graphNode = svg.append("g").selectAll("g").data(graphData.nodes).enter().append("g")
+  const graphNode = svg2.append("g").selectAll("g").data(graphData.nodes).enter().append("g")
 
   // calculate color
   const color = (d: NodeData) => {
@@ -263,7 +355,7 @@ async function renderGraph(container: string, fullSlug: FullSlug) {
 
   // set panning
   if (enableZoom) {
-    svg.call(
+    svg2.call(
       d3
         .zoom<SVGSVGElement, NodeData>()
         .extent([
