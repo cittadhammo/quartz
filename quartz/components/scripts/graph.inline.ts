@@ -66,7 +66,7 @@ async function renderGraph(container: string, fullSlug: FullSlug) {
   const tree = d3.tree().nodeSize([12, 120])
   const treeLink = d3.linkHorizontal().x(d => d.y).y(d => d.x)
   function graph2(root, {
-    label = d => d.data.id, 
+    label = d => d.data.title, 
     highlight = () => false,
     marginLeft = 40
   } = {}) {
