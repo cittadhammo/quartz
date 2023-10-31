@@ -610,10 +610,11 @@ async function renderTreeGraph(container: string, fullSlug: FullSlug) {
   flatData.forEach(d => { // could use a .map TODO
     let id = d.id,
     title = d.text
-    if(id) dataTree.push({ name: id, title: title})
+    if(id && id != slug && title.charAt(0) != "#") dataTree.push({ name: id, title: title})
   })
 
   console.log(dataTree)
+  console.log(slug.split("/").pop())
 
   const dataTree2 = {
     name: "Root",
