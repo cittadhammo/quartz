@@ -10,7 +10,7 @@ const config: QuartzConfig = {
       provider: "plausible",
     },
     //baseUrl: "quartz.jzhao.xyz",
-    baseUrl: "",
+    baseUrl: "https://cittadhammo.github.io/quartz/",
     ignorePatterns: ["private", "templates", ".obsidian"],
     defaultDateType: "created",
     theme: {
