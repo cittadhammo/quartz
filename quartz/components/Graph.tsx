@@ -4,6 +4,9 @@ import script from "./scripts/graph.inline"
 import style from "./styles/graph.scss"
 
 export interface D3Config {
+  radial: boolean 
+  tidy: boolean
+  tree: boolean
   drag: boolean
   zoom: boolean
   depth: number
@@ -24,10 +27,13 @@ interface GraphOptions {
 
 const defaultOptions: GraphOptions = {
   localGraph: {
+    radial: false, 
+    tidy: false,
+    tree: true,
     drag: true,
     zoom: true,
     depth: 1,
-    scale: 1.1,
+    scale: 1,
     repelForce: 0.5,
     centerForce: 0.3,
     linkDistance: 30,
@@ -37,6 +43,8 @@ const defaultOptions: GraphOptions = {
     removeTags: [],
   },
   globalGraph: {
+    radial: true,
+    tidy: false,
     drag: true,
     zoom: true,
     depth: -1,
